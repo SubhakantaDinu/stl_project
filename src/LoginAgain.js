@@ -29,6 +29,7 @@ export default function App() {
   };
 
 
+
   return (
     <>
       <Box component="form" onSubmit={handleSubmit} id="login-form">
@@ -86,8 +87,8 @@ export default function App() {
                             fontSize: "80px",
                             color: "green",
                             marginTop: "40px",
-                            marginLeft: "310px",
-                          }}
+                            marginLeft: "310px", 
+                          }}             
                         />
                         <Typography variant="h4" sx={{ ml: 12 }}>
                           <b>Password Changed Successfully</b>
