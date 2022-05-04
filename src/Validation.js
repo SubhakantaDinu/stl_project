@@ -1,38 +1,41 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import "./App.css";
-import Card from "@mui/material/Card";
-import { Button } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import LogoutIcon from "@mui/icons-material/Logout";
-import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
-import React, { useState } from "react";
+import passwordValidator from "password-validator";
 import ReportIcon from "@mui/icons-material/Report";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import axios from "axios";
-import passwordValidator from "password-validator";
+import EditIcon from "@mui/icons-material/Edit";
 
+import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
+import { Button } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import React, { useState } from "react";
+import Card from "@mui/material/Card";
+import Warning from "./Icon/Warning.gif";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+toast.configure();
 export default function App() {
   var schema = new passwordValidator();
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState(" ");
+  const [newpassword, setNewpassword] = useState("");
+  const [confirmnewpassword, setConfirmnewpassword] = useState(" ");
   const [ma, setMa] = useState(false);
   const [sl, setSl] = useState(false);
   const [Na, setNa] = useState(false);
   const [Sc, setSc] = useState(false);
   const [length, setLength] = useState(false);
-  const [password, setpassword] = useState(false);
-  const [change, setChange] = useState(true);
-
-  // console.log(schema.validate('valid', { list: true }),schema.validate('validPASS123@'),schema.validate('validPAS@S'),schema.validate('val@1D'));
-
-  //Condition to satify all mention criteria
+  const [validate, setValidate] = useState(true);
+  const [proceed, setProceed] = useState(false);
+  const [failure, setFailure] = useState(false);
   const passwordSave = (e) => {
-    setpassword(e.target.value);
+    setPassword(e.target.value);
   };
   const check = (e) => {
     schema
@@ -72,187 +75,154 @@ export default function App() {
       });
     }
 
-    setNewPassword(e.target.value);
+    setNewpassword(e.target.value);
   };
   const check1 = (e) => {
-    setConfirmPassword(e.target.value);
+    setConfirmnewpassword(e.target.value);
   };
 
-  const submitform = (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
+
     const requestPassword = {
       password: password,
-      new_password: newPassword,
-      user_code: "userCode",
-      org_code: "orgCode",
+      new_password: newpassword,
+      confirm_newpassword: confirmnewpassword,
+      user_code: "alokSTLIND",
+      org_code: "STLIND",
     };
     console.log(requestPassword);
-    return false;
+
     axios({
       url: "https://liveexam.edusols.com/api/tassess_api.php?oper=PASSWORD_CHANGE",
       method: "POST",
       data: requestPassword,
     }).then((response) => {
-
       console.log(response.data);
       const result = response.data;
       if (result.status === 200) {
         if (result.status_message === "Item_Found") {
           const data = result.data;
           if (data.dbStatus === "SUCCESS") {
-            setChange(true);
-            alert("Success");
+            toast.success("Password Changed");
+            setTimeout(() => {
+              setValidate(false);
+              setProceed(true);
+             
+            }, 3000);
           } else if (data.dbStatus === "ERROR") {
-            alert("Error");
+            setValidate(false);
+            setFailure(true);
           }
         } else {
-          alert("Something went wrong");
+          toast.error("Error!Contact Support");
         }
       }
     });
   };
 
-  const loginAgainHandler = () => {
-    setChange(true);
-    setMa(false);
-    setSl(false);
-    setNa(false);
-    setSc(false);
-    setLength(false);
-  };
-
-  const handleChange = () => {
-    if (newPassword === "" || newPassword === null || newPassword === " ") {
-      alert("Password Field Can't Be Blank!!");
-    } else {
-      if (newPassword !== confirmPassword) {
-        alert("Password did not match !");
-      } else {
-        alert("Confirm Password Matches");
-      }
-    }
-  };
-
-  // if (newPassword === "" || confirmPassword === "") {
-  //   alert("Password did not match !");
-  // } else {
-  //   alert("Login Sucessfully !");
-
-  // }
-
   return (
     <>
       <form>
-        <Box component="form" id="login-form">
-          {change ? (
-            <Grid container justifyContent="center">
-              <Grid
-                item
-                lg={12}
-                sm={6}
-                sx={{
-                  backgroundImage:
-                    "url(https://images.unsplash.com/photo-1593062096033-9a26b09da705?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80)",
-                  backgroundRepeat: "no-repeat",
-                  maxHeight: "100vh",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-                style={{ minHeight: "100vh" }}
-              >
-                <Grid container justifyContent="center">
+        <Box>
+          <Grid container justifyContent="center">
+            <Grid
+              item
+              lg={12}
+              md={6}
+              sm={3}
+              sx={{
+                backgroundImage:
+                  "url(https://wallpaperaccess.com/full/1657789.jpg)",
+                backgroundRepeat: "no-repeat",
+                maxHeight: "100vh",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+              style={{ minHeight: "100vh" }}
+            >
+              <Grid container lg={12} justifyContent="center">
+                {validate ? (
                   <Grid
                     item
-                    lg={8}
-                    sm={3}
+                    lg={9}
+                    sm={4}
                     mt={10}
-                    sx={{
-                      backgroundColor: "whitesmoke",
-                      borderTop: "4px solid royalblue",
-                      borderRadius: "4px",
-                    }}
+                    sx={{ backgroundColor: "whitesmoke" }}
                   >
                     <Typography
                       variant="h6"
                       component="div"
-                      sx={{
-                        flexGrow: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        width: "100%",
-                        margin: "1em 0",
-                      }}
+                      sx={{ flexGrow: 1, mb: 2, mt: 2 }}
                     >
-                      <div style={{ padding: "0 1em" }}>
-                        <EditIcon color="primary" />
-                        <b>Change Default Password</b>
-                      </div>
-                      <Typography variant="h9" sx={{ padding: "0 1em" }}>
-                        <b>Welcome,Alok Sahoo</b>
+                      <EditIcon color="primary" />{" "}
+                      <b>Change Default Password</b>
+                      <Typography
+                        variant="h11"
+                        sx={{ flexGrow: 1, mb: 2, ml: 27 }}
+                      >
+                        <b>Welcome, Alok Sahoo</b>
                         <Button variant="outlined" size="small" color="warning">
                           <LogoutIcon /> LOGOUT
                         </Button>
                       </Typography>
                     </Typography>
-                    <hr />
-                    <Grid container lg={12} sm={2}>
-                      <Grid item xs={6} spacing={6}>
-                        <Box m={3}>
-                          <TextField
-                            label="Password"
-                            variant="outlined"
-                            type="password"
-                            name="password"
-                            id="password"
-                            margin="normal"
-                            fullWidth
-                            onChange={(e) => passwordSave(e)}
-                          />
-                          <TextField
-                            autoComplete="newpassword"
-                            label="New Password"
-                            variant="outlined"
-                            type="password"
-                            name="newpassword"
-                            required
-                            id="newpassword"
-                            margin="normal"
-                            fullWidth
-                            onChange={(e) => check(e)}
-                          />
+                    <Grid container lg={10}>
+                      <Grid lg={8} sm={2}>
+                        <card sx={{ maxHeight: "100%", maxWidth: "80%" }}>
+                          <Box m={3}>
+                            <TextField
+                              label="Password"
+                              variant="outlined"
+                              type="text"
+                              name="password"
+                              margin="normal"
+                              onChange={(e) => passwordSave(e)}
+                              fullWidth
+                            />
+                            <TextField
+                              autoComplete="newpassword"
+                              label=" New Password"
+                              variant="outlined"
+                              type="password"
+                              name="newpassword"
+                              margin="normal"
+                              onChange={(e) => check(e)}
+                              fullWidth
+                            />
 
-                          <TextField
-                            label=" Confirm New Password"
-                            variant="outlined"
-                            type="password"
-                            name="confirmnewpassword"
-                            id="confirmnewpassword"
-                            margin="normal"
-                            fullWidth
-                            onChange={(e) => check1(e)}
-                          />
+                            <TextField
+                              label=" Confirm New Password"
+                              variant="outlined"
+                              type="password"
+                              name="confirmnewpassword"
+                              margin="normal"
+                              onChange={(e) => check1(e)}
+                              fullWidth
+                            />
 
-                          <Button
-                            variant="contained"
-                            size="medium"
-                            color="success"
-                            endIcon={<ChangeCircleIcon />}
-                            fullWidth
-                            mt="2"
-                            type="submit"
-                            margin="normal"
-                            onClick={submitform}
-                          >
-                            Change
-                          </Button>
-                        </Box>
+                            <Button
+                              variant="contained"
+                              size="medium"
+                              color="success"
+                              endIcon={<ChangeCircleIcon />}
+                              fullWidth
+                              mt="2"
+                              type="submit"
+                              margin="normal"
+                              onClick={submitForm}
+                            >
+                              <ToastContainer/>
+                              change
+                            </Button>
+                          </Box>
+                        </card>
                       </Grid>
-                      <Grid item lg={6} md={3} sm={1}>
+                      <Grid item lg={2} sm={1}>
                         <Box
                           sx={{
-                            width: 300,
-                            height: 300,
+                            width: 250,
+                            height: 320,
                             backgroundColor: "#b3e0f2",
                             "&:hover": {
                               backgroundColor: "primary.info",
@@ -327,91 +297,68 @@ export default function App() {
                       </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          ) : (
-            <Grid
-              item
-              sm={6}
-              sx={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80)",
-                backgroundRepeat: "no-repeat",
-                maxHeight: "100vh",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-              style={{ minHeight: "100vh" }}
-            >
-              <Grid container justifyContent="center">
-                <Grid
-                  item
-                  lg={8}
-                  sm={4}
-                  mt={10}
-                  sx={{ backgroundColor: "whitesmoke" }}
-                >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, mb: 2, mt: 2 }}
+                ) : (
+                  ""
+                )}
+                {failure ? (
+                  <Card
+                    sx={{
+                      marginTop: "80px",
+                      width: "710px",
+                      height: "300px",
+                      marginBottom: "161px",
+                    }}
                   >
-                    <EditIcon color="primary" /> <b>Change Default Password</b>
-                    <Typography
-                      variant="h9"
-                      sx={{ flexGrow: 1, mb: 2, ml: 30 }}
-                    >
-                      <b>Welcome,Alok Sahoo</b>
-                      <Button variant="outlined" size="small" color="warning">
-                        <LogoutIcon /> LOGOUT
-                      </Button>
-                    </Typography>
-                  </Typography>
-                  <Grid lg={6} sm={2}>
-                    <card sx={{ maxHeight: "100%", maxWidth: "80%" }}>
-                      <Box m={3}>
-                        <Card
-                          sx={{
-                            height: "400px",
-                            width: "800px",
-                            ml: "90px",
-                            mr: "90px",
+                    <Grid container justifyContent="center">
+                      <Grid item lg={6} sm={3}>
+                        <Typography variant="h6">
+                          <b>Password Changed failed....❌</b>
+                        </Typography>
+                        <img src={Warning} />
+                      </Grid>
+                    </Grid>
+                  </Card>
+                ) : (
+                  ""
+                )}
+                {proceed ? (
+                  <Card
+                    sx={{
+                      marginTop: "80px",
+                      width: "710px",
+                      height: "300px",
+                      marginBottom: "161px",
+                    }}
+                  >
+                    <Grid container justifyContent="center">
+                      <Grid item lg={6} sm={3}>
+                        <CheckCircleOutlineIcon
+                          style={{
+                            color: "green",
+                            height: "120px",
+                            width: "200px",
+                            marginLeft: "60px",
+                            marginTop: "5px",
+                          }}
+                        />
+
+                        <Typography
+                          variant="h5"
+                          style={{
+                            color: "grey",
                           }}
                         >
-                          <Container sx={{ flexGrow: 5 }}>
-                            <hr />
-
-                            <CheckCircleIcon
-                              style={{
-                                fontSize: "80px",
-                                color: "green",
-                                marginTop: "40px",
-                                marginLeft: "310px",
-                              }}
-                            />
-                            <Typography variant="h4" sx={{ ml: 12 }}>
-                              <b>Password Changed Successfully</b>
-                            </Typography>
-                            <Typography variant="h6" sx={{ ml: 12 }}>
-                              Please login again using new password...
-                            </Typography>
-                            <Button
-                              variant="contained"
-                              sx={{ ml: 37, mt: 5 }}
-                              onClick={loginAgainHandler}
-                            >
-                              Login Again
-                            </Button>
-                          </Container>
-                        </Card>
-                      </Box>
-                    </card>
-                  </Grid>
-                </Grid>
+                          <b> Password Changed Done..</b>
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Card>
+                ) : (
+                  ""
+                )}
               </Grid>
             </Grid>
-          )}
+          </Grid>
         </Box>
       </form>
     </>
