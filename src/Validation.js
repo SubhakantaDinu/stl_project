@@ -23,7 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 toast.configure();
 export default function App() {
   var schema = new passwordValidator();
-  const [password, setPassword] = useState(" ");
+  // const [password, setPassword] = useState(" ");
   const [newpassword, setNewpassword] = useState("");
   const [confirmnewpassword, setConfirmnewpassword] = useState(" ");
   const [ma, setMa] = useState(false);
@@ -34,9 +34,9 @@ export default function App() {
   const [validate, setValidate] = useState(true);
   const [proceed, setProceed] = useState(false);
   const [failure, setFailure] = useState(false);
-  const passwordSave = (e) => {
-    setPassword(e.target.value);
-  };
+  // const passwordSave = (e) => {
+  //   setPassword(e.target.value);
+  // };
   const check = (e) => {
     schema
       .is()
@@ -80,8 +80,12 @@ export default function App() {
   const check1 = (e) => {
     setConfirmnewpassword(e.target.value);
   };
+  const getData = JSON.parse(localStorage.getItem("localData"));
+  const userData = JSON.parse(localStorage.getItem("resultData"));
+  console.log(getData);
 
   const submitForm = (e) => {
+    const password = document.getElementById("old_password").value;
     e.preventDefault();
 
     const requestPassword = {
@@ -91,7 +95,7 @@ export default function App() {
       user_code: "alokSTLIND",
       org_code: "STLIND",
     };
-    console.log(requestPassword);
+    // console.log(requestPassword);
 
     axios({
       url: "https://liveexam.edusols.com/api/tassess_api.php?oper=PASSWORD_CHANGE",
@@ -108,7 +112,6 @@ export default function App() {
             setTimeout(() => {
               setValidate(false);
               setProceed(true);
-             
             }, 3000);
           } else if (data.dbStatus === "ERROR") {
             setValidate(false);
@@ -159,9 +162,9 @@ export default function App() {
                       <b>Change Default Password</b>
                       <Typography
                         variant="h11"
-                        sx={{ flexGrow: 1, mb: 2, ml: 27 }}
+                        sx={{ flexGrow: 1, mb: 2, ml: 57 }}
                       >
-                        <b>Welcome, Alok Sahoo</b>
+                        <b>Welcome,{userData.data.first_name +" "+userData.data.last_name} </b>
                         <Button variant="outlined" size="small" color="warning">
                           <LogoutIcon /> LOGOUT
                         </Button>
@@ -175,9 +178,11 @@ export default function App() {
                               label="Password"
                               variant="outlined"
                               type="text"
+                              id="old_password"
                               name="password"
+                              value={getData.password}
                               margin="normal"
-                              onChange={(e) => passwordSave(e)}
+                              // onChange={(e) => passwordSave(e)}
                               fullWidth
                             />
                             <TextField
@@ -212,7 +217,7 @@ export default function App() {
                               margin="normal"
                               onClick={submitForm}
                             >
-                              <ToastContainer/>
+                              <ToastContainer />
                               change
                             </Button>
                           </Box>
@@ -222,7 +227,7 @@ export default function App() {
                         <Box
                           sx={{
                             width: 250,
-                            height: 320,
+                            height: 350,
                             backgroundColor: "#b3e0f2",
                             "&:hover": {
                               backgroundColor: "primary.info",
@@ -314,7 +319,7 @@ export default function App() {
                         <Typography variant="h6">
                           <b>Password Changed failed....❌</b>
                         </Typography>
-                        <img src={Warning} />
+                        <img src={Warning} alt="" />
                       </Grid>
                     </Grid>
                   </Card>

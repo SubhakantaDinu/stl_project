@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import ErrorIcon from "@mui/icons-material/Error";
-import profilePhoto from "./Icon/Dinu.jpeg";
+// import profilePhoto from "./Icon/Dinu.jpeg";
 import CameraIcon from "@mui/icons-material/Camera";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -100,7 +100,8 @@ function PhotoValidation() {
     setVerified(true);
     setCaptured(true);
   };
-
+  const userData =JSON.parse(localStorage.getItem("resultData"));
+  console.log(userData);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -168,7 +169,7 @@ function PhotoValidation() {
                       component="div"
                       style={{ marginLeft: "20" }}
                     >
-                      <b> Hi, Shivangi Sahu &nbsp;</b>
+                      <b> Hi, {userData.data.first_name + " "+userData.data.last_name}&nbsp;</b>
                       <Button
                         variant="outlined"
                         style={{
@@ -203,9 +204,9 @@ function PhotoValidation() {
                       <Box>
                         <img
                           style={{ borderRadius: "10px" }}
-                          src={profilePhoto}
+                          src={userData.data.profile_image_url}
                           height="160px"
-                          width="130px"
+                          width="150px"
                           alt="Profile"
                         />
                       </Box>
@@ -222,7 +223,7 @@ function PhotoValidation() {
                         style={{
                           marginTop: "10px",
                           height: "350px",
-                          width: "550px",
+                          width: "500px",
                           mr: 5,
                         }}
                       />
@@ -265,7 +266,7 @@ function PhotoValidation() {
                     md={3}
                     xs={12}
                     justifyContent="center"
-                    style={{ marginTop: "20px" }}
+                    style={{ marginTop: "20px",marginLeft:"-1px" }}
                   >
                     <Typography>
                       <b>Captured photo</b>

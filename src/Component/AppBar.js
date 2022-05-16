@@ -44,7 +44,7 @@ const ResponsiveAppBar = () => {
             component="div"
             style={{ marginLeft:'20' }}
           >
-            <b> Hi, Shivangi Sahu &nbsp;</b>
+            <b> Hi, Alok Sahoo &nbsp;</b>
             <Button
               variant="outlined"
               style={{ color: "orange", border: "1px solid #deae99" }}
